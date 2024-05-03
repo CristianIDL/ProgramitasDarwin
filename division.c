@@ -36,13 +36,13 @@ int main(){
 
     printf("----- ALGORITMO DE EUCLIDES -----\n");
     mcd = euclides(a,b,k,r,&n);
-    printf("Se realizaron un total de %d divisiones.\n",n);
     printf("mcd(%lld,%lld)= %lld\n",a,b,mcd);
+    printf("Se realizaron un total de %d operaciones. Bezout tendra %d\n",n,n-1);
 
     printf("----- ALGORITMO DE BEZOUT -----\n");
     B1 = crearEstructura(n);
     euclidesParaBezout(a,b,k,r,B1);
-    mostrarOperaciones(B1,n);
+    //mostrarOperaciones(B1,n);
     algoritmoBezout(B1,mcd,n);
     free(B1);
 
@@ -164,27 +164,37 @@ void algoritmoBezout(Bezout *B1, long long int mcd, int n){
     long long int aB, x, bB, y, rB, aOG = B1[0].A, bOG = B1[0].B; 
     int orden = 0;
 
-    rB = B1[n-2].R; /*rB mantendrá su valor*/
-    aB = B1[n-2].A;
-    x = 1;
-    bB = B1[n-2].B;
-    y = B1[n-2].K * -1;
-
-    for (int i = n-2; i >= 0; i--){
-        if(orden%2 == 0 && orden != 0){
-            aB = B1[i].A;
-            y -= B1[i].K * x;
-        }if(orden%2 != 0){
-            aB = B1[i].B;
-            x += (-B1[i].K)*y;
-            //printf("%lld + %lld * %lld\n",x,-B1[i].K,y);
-            bB = B1[i-1].B;
+    if(n == 0){
+        printf("mcd(0,%lld) = 0(0) + %lld(1)\n", mcd, mcd);
+    }else{
+        rB = B1[n-2].R; /*rB mantendrá su valor*/
+        aB = B1[n-2].A;
+        x = 1;
+        bB = B1[n-2].B;
+        y = B1[n-2].K * -1;
+        
+        for (int i = n-2; i >= 0; i--){
+            if(orden%2 == 0 && orden != 0){
+                aB = B1[i].A;
+                y -= B1[i].K * x;
+            }if(orden%2 != 0){
+                aB = B1[i].B;
+                x += (-B1[i].K)*y;
+                //printf("%lld + %lld * %lld\n",x,-B1[i].K,y);
+                bB = B1[i-1].B;
+            }
+            printf("%d: %lld = %lld(%lld) + %lld(%lld)\n", i, rB, aB, x, bB, y);
+            //printf("%lld = %lld(%lld) + %lld(-%lld)\n", B1[i].R, B1[i].A, B1[i].B, B1[i].K);
+            orden++;
         }
-        printf("%d: %lld = %lld(%lld) + %lld(%lld)\n", i, rB, aB, x, bB, y);
-        //printf("%lld = %lld(%lld) + %lld(-%lld)\n", B1[i].R, B1[i].A, B1[i].B, B1[i].K);
-        orden++;
+
+        int eldiablo = n-1;
+
+        if((eldiablo % 2) == 0)
+            printf("mcd(%lld,%lld) = %lld(%lld) + %lld(%lld)\n", aOG, bOG, bOG, x, aOG, y);
+        else    
+            printf("mcd(%lld,%lld) = %lld(%lld) + %lld(%lld)\n", aOG, bOG, aOG, x, bOG, y);
     }
-    printf("mcd(%lld,%lld) = %lld(%lld) + %lld(%lld)\n", aOG, bOG, aOG, x, bOG, y);
 }
 
 void bIgualCero(long long int b){
